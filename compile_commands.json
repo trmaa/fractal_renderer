@@ -1,0 +1,15 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude/",
+      "-o",
+      "ray_marcher.app",
+      "src/main.cpp"
+    ],
+    "directory": "/home/pablo/ray_marcher",
+    "file": "/home/pablo/ray_marcher/src/main.cpp",
+    "output": "/home/pablo/ray_marcher/ray_marcher.app"
+  }
+]
