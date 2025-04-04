@@ -12,8 +12,8 @@ float fractal_distance(Fractal fractal, vec3 point) {
     float dr = 1.0;
     float r = 0.0;
     
-    int Iterations = 8;
-    float Power = 8.0;
+    int Iterations = 15;
+    float Power = 15;
 
     for (int i = 0; i < Iterations; i++) {
         r = length(z);
