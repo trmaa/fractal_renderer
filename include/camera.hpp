@@ -38,23 +38,23 @@ public:
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            m_position.x += std::sin(m_angle.y) * fixed_speed;
-            m_position.z += std::cos(m_angle.y) * fixed_speed;
+            m_position.x += std::sin(m_angle.x) * fixed_speed;
+            m_position.z += std::cos(m_angle.x) * fixed_speed;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            m_position.x -= std::sin(m_angle.y) * fixed_speed;
-            m_position.z -= std::cos(m_angle.y) * fixed_speed;
+            m_position.x -= std::sin(m_angle.x) * fixed_speed;
+            m_position.z -= std::cos(m_angle.x) * fixed_speed;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            m_position.x -= std::sin(m_angle.y + 3.14159f / 2) * fixed_speed;
-            m_position.z -= std::cos(m_angle.y + 3.14159f / 2) * fixed_speed;
+            m_position.x -= std::sin(m_angle.x + 3.14159f / 2) * fixed_speed;
+            m_position.z -= std::cos(m_angle.x + 3.14159f / 2) * fixed_speed;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            m_position.x += std::sin(m_angle.y + 3.14159f / 2) * fixed_speed;
-            m_position.z += std::cos(m_angle.y + 3.14159f / 2) * fixed_speed;
+            m_position.x += std::sin(m_angle.x + 3.14159f / 2) * fixed_speed;
+            m_position.z += std::cos(m_angle.x + 3.14159f / 2) * fixed_speed;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
