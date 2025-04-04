@@ -6,81 +6,83 @@
 
 class Camera {
 private:
-	sf::Vector3f m_position;
-	sf::Vector3f m_direction;
+    sf::Vector3f m_position;
+    sf::Vector3f m_angle;
 
-	float m_speed = 1.f;
+    float m_speed;
+    float m_mouseSensitivity;
 
-	float m_mouse_sensitivity = 0.2f;
-	bool m_mouse_locked = false;
-	sf::Vector2f m_center_position;
+    sf::Vector2f m_centerPosition;
+    bool m_mouseLocked;
 
 public:
-	sf::Vector3f get_position() const { return this->m_position; }
-	sf::Vector3f get_direction() const { return this->m_direction; }
+    sf::Vector3f get_position() const { return m_position; }
+    sf::Vector3f get_angle() const { return m_angle; }
 
-	Camera(): m_position(0, 0, 0), m_direction(0, 0, -1) {}
+public:
+    Camera()
+        : m_position(0, 0, -15), m_angle(0, 0, 0), m_speed(8.f), m_mouseSensitivity(0.2f), m_mouseLocked(false) {}
+    ~Camera() = default;
 
-	void move(float delta_time) {
-		sf::Vector2f dir_2d(m_direction.x, m_direction.z);
-		float angle = std::atan2(dir_2d.y, dir_2d.x);
+    void lock_mouse(sf::RenderWindow& window) {
+        m_centerPosition = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
+        window.setMouseCursorVisible(false);
+        sf::Mouse::setPosition(window.mapCoordsToPixel({ m_centerPosition.x, m_centerPosition.y }), window);
+        m_mouseLocked = true;
+    }
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-			this->m_position.x +=  std::cos(angle) * this->m_speed * delta_time;	
-			this->m_position.z +=  std::sin(angle) * this->m_speed * delta_time;	
-		}		
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-			this->m_position.x -=  std::cos(angle) * this->m_speed * delta_time;	
-			this->m_position.z -=  std::sin(angle) * this->m_speed * delta_time;	
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			this->m_position.x +=  std::cos(angle+M_PI/2) * this->m_speed * delta_time;	
-			this->m_position.z +=  std::sin(angle+M_PI/2) * this->m_speed * delta_time;	
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-			this->m_position.x -=  std::cos(angle+M_PI/2) * this->m_speed * delta_time;	
-			this->m_position.z -=  std::sin(angle+M_PI/2) * this->m_speed * delta_time;	
-		}
+    void move(const float& dt) {
+        float fixed_speed = m_speed * dt;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+            fixed_speed *= 10;
+        }
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            this->m_position.y += this->m_speed * delta_time;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            m_position.x += std::sin(m_angle.y) * fixed_speed;
+            m_position.z += std::cos(m_angle.y) * fixed_speed;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+            m_position.x -= std::sin(m_angle.y) * fixed_speed;
+            m_position.z -= std::cos(m_angle.y) * fixed_speed;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            m_position.x -= std::sin(m_angle.y + 3.14159f / 2) * fixed_speed;
+            m_position.z -= std::cos(m_angle.y + 3.14159f / 2) * fixed_speed;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            m_position.x += std::sin(m_angle.y + 3.14159f / 2) * fixed_speed;
+            m_position.z += std::cos(m_angle.y + 3.14159f / 2) * fixed_speed;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+            m_position.y += fixed_speed;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-            this->m_position.y -= this->m_speed*delta_time;
+            m_position.y -= fixed_speed;
         }
-	}
+    }
 
-	void lock_mouse(sf::RenderWindow& window) {
-		this->m_center_position = sf::Vector2f(window.getSize().x/2.f, window.getSize().y/2.f);
-		window.setMouseCursorVisible(false);
-		sf::Mouse::setPosition(
-				window.mapCoordsToPixel(
-				{ this->m_center_position.x, this->m_center_position.y }), window);
-        this->m_mouse_locked = true;
-	}
-
-	void handle_mouse_movement(sf::RenderWindow& window) {
-        if (!this->m_mouse_locked) {
+    void handle_mouse_movement(sf::RenderWindow& window) {
+        if (!m_mouseLocked) {
             lock_mouse(window);
             return;
         }
 
-		sf::Vector2f angle;
-		angle.y = std::atan2(this->m_direction.z, this->m_direction.x);
-		angle.x = std::atan2(this->m_direction.y, this->m_direction.x);
-
         sf::Vector2f mousePosition = (sf::Vector2f)sf::Mouse::getPosition(window);
-        sf::Vector2f mouseDelta = mousePosition - this->m_center_position;
+        sf::Vector2f mouseDelta = mousePosition - m_centerPosition;
 
-        angle.y += mouseDelta.x * this->m_mouse_sensitivity * 0.0174533f;
-        angle.x -= mouseDelta.y * this->m_mouse_sensitivity * 0.0174533f;
+        m_angle.y += mouseDelta.x * m_mouseSensitivity * 0.0174533f;
+        m_angle.x -= mouseDelta.y * m_mouseSensitivity * 0.0174533f;
 
         const float maxPitch = 89.0f * 0.0174533f;
-        if (angle.x > maxPitch) angle.x = maxPitch;
-        if (angle.x < -maxPitch) angle.x = -maxPitch;
+        if (m_angle.x > maxPitch) m_angle.x = maxPitch;
+        if (m_angle.x < -maxPitch) m_angle.x = -maxPitch;
 
-        sf::Mouse::setPosition(window.mapCoordsToPixel({ this->m_center_position.x, this->m_center_position.y }), window);
+        sf::Mouse::setPosition(window.mapCoordsToPixel({ m_centerPosition.x, m_centerPosition.y }), window);
     }
 };
 
