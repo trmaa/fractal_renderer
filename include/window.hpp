@@ -29,10 +29,10 @@ public:
 		this->create(sf::VideoMode(1280*factor, 720*factor), m_title, sf::Style::None);
 		this->setFramerateLimit(60);
 
-		m_font.loadFromFile("bin/fonts/pixelmix.ttf");
+		m_font.loadFromFile("bin/fonts/terminus.ttf");
 		m_fps_text.setFont(m_font);
 		m_fps_text.setCharacterSize(50);
-		m_fps_text.setFillColor(sf::Color(255, 100, 0));
+		m_fps_text.setFillColor(sf::Color(255, 0, 255));
 		m_fps_text.setPosition(10, 10);
 
 		std::system("python3 scripts/shader_compiler.py");
