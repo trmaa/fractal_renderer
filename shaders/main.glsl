@@ -3,6 +3,7 @@
 uniform vec2 screen_size;
 uniform vec3 cam_pos;
 uniform vec2 cam_ang;
+uniform float i_time;
 
 #include "tools.glsl"
 #include "scene.glsl"
@@ -16,7 +17,7 @@ void main() {
     vec3 ray_idle_dir = normalize(vec3(uv.xy, 2.5));
     vec3 ray_dir = angle2_to_vector3_matrix(cam_ang) * ray_idle_dir;
 
-    vec3 color = vec3(0);
+    vec3 color = vec3(0);//ray_dir;
 
     //set color
     float dist = 1;

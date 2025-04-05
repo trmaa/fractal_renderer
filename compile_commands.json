@@ -5,11 +5,11 @@
       "-c",
       "-Iinclude/",
       "-o",
-      "app",
+      "ray_marcher.app",
       "src/main.cpp"
     ],
-    "directory": "/home/pablo/GPU-RAY-TRACING-CPP-SFML-GLSL",
-    "file": "/home/pablo/GPU-RAY-TRACING-CPP-SFML-GLSL/src/main.cpp",
-    "output": "/home/pablo/GPU-RAY-TRACING-CPP-SFML-GLSL/app"
+    "directory": "/home/pablo/ray_marcher",
+    "file": "/home/pablo/ray_marcher/src/main.cpp",
+    "output": "/home/pablo/ray_marcher/ray_marcher.app"
   }
 ]

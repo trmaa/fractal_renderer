@@ -3,6 +3,7 @@
 uniform vec2 screen_size;
 uniform vec3 cam_pos;
 uniform vec2 cam_ang;
+uniform float i_time;
 
 mat3 angle2_to_vector3_matrix(vec2 angle2) {
     float cos_pitch = cos(angle2.y);
@@ -45,8 +46,8 @@ float fractal_distance(Fractal fractal, vec3 point) {
     float dr = 1.0;
     float r = 0.0;
     
-    int Iterations = 15;
-    float Power = 15;
+    int Iterations = 8;
+    float Power = 5 * abs(sin(i_time)) + 2;
 
     for (int i = 0; i < Iterations; i++) {
         r = length(z);
@@ -83,7 +84,7 @@ void main() {
     vec3 ray_idle_dir = normalize(vec3(uv.xy, 2.5));
     vec3 ray_dir = angle2_to_vector3_matrix(cam_ang) * ray_idle_dir;
 
-    vec3 color = vec3(0);
+    vec3 color = vec3(0);//ray_dir;
 
     //set color
     float dist = 1;

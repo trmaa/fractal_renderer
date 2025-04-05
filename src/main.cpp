@@ -6,13 +6,14 @@
 Window window("Ray tracing");
 Camera camera;
 
+float i_time;
 float delta_time;
 
 void loop() {
     camera.move(delta_time);
     camera.handle_mouse_movement(window);
 
-    window.repaint(delta_time, camera);
+    window.repaint(i_time, delta_time, camera);
 }
 
 void setup_loop() {
@@ -24,6 +25,7 @@ void setup_loop() {
                 window.close();
             }
         }
+        i_time += 0.01f * clock.getElapsedTime().asSeconds();
         delta_time = clock.restart().asSeconds();
         
         loop();

@@ -45,12 +45,12 @@ public:
 		m_screen.setScale(1,1);
 	}
 
-	void repaint(float delta_time, Camera camera) {
+	void repaint(float i_time, float delta_time, Camera camera) {
 		this->clear();
 
 		m_shader.setUniform("cam_pos", camera.get_position());
 		m_shader.setUniform("cam_ang", camera.get_angle());
-		m_shader.setUniform("iTime", delta_time);
+		m_shader.setUniform("i_time", i_time);
 		m_shader.setUniform("screen_size", sf::Vector2f(this->getSize()));
 		this->draw(m_screen, &m_shader);
 
