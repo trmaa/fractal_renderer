@@ -46,8 +46,8 @@ float fractal_distance(Fractal fractal, vec3 point) {
     float dr = 1.0;
     float r = 0.0;
     
-    int Iterations = 8;
-    float Power = 5 * abs(sin(i_time)) + 2;
+    int Iterations = 6;
+    float Power = 8 * abs(sin(i_time)) + 2;
 
     for (int i = 0; i < Iterations; i++) {
         r = length(z);
@@ -70,7 +70,17 @@ float fractal_distance(Fractal fractal, vec3 point) {
     return 0.5 * log(r) * r / dr;
 }
 
+vec3 fractal_normal(Fractal fractal, vec3 p) {
+    float eps = 0.001; // Try tweaking this if output is still zero
+    return normalize(vec3(
+        fractal_distance(fractal, p + vec3(eps, 0.0, 0.0)) - fractal_distance(fractal, p - vec3(eps, 0.0, 0.0)),
+        fractal_distance(fractal, p + vec3(0.0, eps, 0.0)) - fractal_distance(fractal, p - vec3(0.0, eps, 0.0)),
+        fractal_distance(fractal, p + vec3(0.0, 0.0, eps)) - fractal_distance(fractal, p - vec3(0.0, 0.0, eps))
+    ));
+}
+
 vec3 sun_dir = normalize(vec3(1.0, 1.0, 1.0));
+float sun_brightness = 0.2;
 
 Fractal fractal = Fractal(vec3(0.0, 0.0, 0.0), 1.0);
 
@@ -93,10 +103,11 @@ void main() {
     for (int i = 0; i < steps; i++) {
         dist = fractal_distance(fractal, starting_point);
         starting_point += ray_dir * dist;
-        vec3 normal = normalize(starting_point - fractal.center);
         if (dist <= minimum_distance) {
-            color = vec3(1) * i/steps;// * dot(normal, sun_dir);
-            color = 1 - color;
+            vec3 normal = fractal_normal(fractal, starting_point);
+            color = vec3(1) * i/steps;
+            color = (1 - color) * clamp(dot(normal, sun_dir), sun_brightness, 1);
+            color *= abs(normal);
             break;
         }
     }

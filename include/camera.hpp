@@ -21,7 +21,7 @@ public:
 
 public:
     Camera()
-        : m_position(0, 0, 0), m_angle(M_PI, 0), m_speed(0.1f), m_mouse_sensitivity(0.2f), m_mouse_locked(false) {}
+        : m_position(0, 0, 5), m_angle(M_PI, 0), m_speed(0.1f), m_mouse_sensitivity(0.2f), m_mouse_locked(false) {}
     ~Camera() = default;
 
     void lock_mouse(sf::RenderWindow& window) {

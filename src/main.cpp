@@ -25,7 +25,7 @@ void setup_loop() {
                 window.close();
             }
         }
-        i_time += 0.01f * clock.getElapsedTime().asSeconds();
+        i_time += 0.1f * clock.getElapsedTime().asSeconds();
         delta_time = clock.restart().asSeconds();
         
         loop();
