@@ -1,5 +1,6 @@
 # fractal renderer with ray marching
 
+![](bin/screenshots/screenshot3.png)
 ![](bin/screenshots/screenshot.png)
 ![](bin/screenshots/screenshot1.png)
 ![](bin/screenshots/screenshot2.png)
