@@ -94,28 +94,34 @@ void main() {
     vec3 ray_idle_dir = normalize(vec3(uv.xy, 2.5));
     vec3 ray_dir = angle2_to_vector3_matrix(cam_ang) * ray_idle_dir;
 
-    vec3 color = vec3(0);//ray_dir;
+    vec3 color = vec3(0);
+    vec3 glow = vec3(0);
 
-    //set color
-    float dist = 1;
+    float dist = 1.0;
     vec3 starting_point = cam_pos;
     int steps = 50;
+
     for (int i = 0; i < steps; i++) {
         dist = fractal_distance(fractal, starting_point);
+        
+        float glow_strength = 0.1;
+        float bloom_factor = exp(-dist * 1.0);
+        glow += vec3(0.8, 0.5, 0.1) * bloom_factor * glow_strength;
+
         starting_point += ray_dir * dist;
+
         if (dist <= minimum_distance) {
-            //vec3(starting_point - fractal.center);//fractal_normal(fractal, starting_point);
             vec3 normal = fractal_normal(fractal, starting_point);
-            color = vec3(1) * i/steps;
-            //color *= abs(normal);
-            color = (1 - color);
-            color *= vec3(length(color), 0, 1);
-            color *= clamp(dot(normal, sun_dir), sun_brightness, 1);
+            color = vec3(1.0) * float(i) / float(steps);
+            color = (1.0 - color);
+            //color *= normal;
+            color *= vec3(length(color), 0.0, 1.0);
+            color *= clamp(dot(normal, sun_dir), sun_brightness, 1.0);
             break;
         }
     }
-    //color setted
 
+    color += glow/3;
     color = clamp(color, 0.0, 1.0);
 
     gl_FragColor = vec4(color, 1.0);
