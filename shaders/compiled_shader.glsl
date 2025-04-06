@@ -42,12 +42,15 @@ struct Fractal {
 }*/
 
 float fractal_distance(Fractal fractal, vec3 point) {
+    vec3 tileSize = vec3(4.0);
+    point = mod(point + 0.5 * tileSize, tileSize) - 0.5 * tileSize;
+
     vec3 z = point;
     float dr = 1.0;
     float r = 0.0;
     
     int Iterations = 6;
-    float Power = 8 * abs(sin(i_time)) + 2;
+    float Power = 8.0 * abs(sin(i_time)) + 2.0;
 
     for (int i = 0; i < Iterations; i++) {
         r = length(z);
@@ -105,7 +108,7 @@ void main() {
         dist = fractal_distance(fractal, starting_point);
         
         float glow_strength = 0.1;
-        float bloom_factor = exp(-dist * 1.0);
+        float bloom_factor = exp(-dist * 15.0);
         glow += vec3(0.8, 0.5, 0.1) * bloom_factor * glow_strength;
 
         starting_point += ray_dir * dist;
@@ -116,7 +119,7 @@ void main() {
             color = (1.0 - color);
             //color *= normal;
             color *= vec3(length(color), 0.0, 1.0);
-            color *= clamp(dot(normal, sun_dir), sun_brightness, 1.0);
+            color *= clamp(dot(normal, -sun_dir), sun_brightness, 1.0);
             break;
         }
     }

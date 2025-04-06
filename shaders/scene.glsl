@@ -8,12 +8,15 @@ struct Fractal {
 }*/
 
 float fractal_distance(Fractal fractal, vec3 point) {
+    vec3 tileSize = vec3(4.0);
+    point = mod(point + 0.5 * tileSize, tileSize) - 0.5 * tileSize;
+
     vec3 z = point;
     float dr = 1.0;
     float r = 0.0;
     
     int Iterations = 6;
-    float Power = 8 * abs(sin(i_time)) + 2;
+    float Power = 8.0 * abs(sin(i_time)) + 2.0;
 
     for (int i = 0; i < Iterations; i++) {
         r = length(z);
