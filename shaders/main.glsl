@@ -27,10 +27,13 @@ void main() {
         dist = fractal_distance(fractal, starting_point);
         starting_point += ray_dir * dist;
         if (dist <= minimum_distance) {
+            //vec3(starting_point - fractal.center);//fractal_normal(fractal, starting_point);
             vec3 normal = fractal_normal(fractal, starting_point);
             color = vec3(1) * i/steps;
-            color = (1 - color) * clamp(dot(normal, sun_dir), sun_brightness, 1);
-            color *= abs(normal);
+            //color *= abs(normal);
+            color = (1 - color);
+            color *= vec3(length(color), 0, 1);
+            color *= clamp(dot(normal, sun_dir), sun_brightness, 1);
             break;
         }
     }

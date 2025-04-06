@@ -46,6 +46,6 @@ vec3 fractal_normal(Fractal fractal, vec3 p) {
 }
 
 vec3 sun_dir = normalize(vec3(1.0, 1.0, 1.0));
-float sun_brightness = 0.2;
+float sun_brightness = 0.5;
 
 Fractal fractal = Fractal(vec3(0.0, 0.0, 0.0), 1.0);
