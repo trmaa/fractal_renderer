@@ -42,39 +42,41 @@ struct Fractal {
 }*/
 
 float fractal_distance(Fractal fractal, vec3 point) {
-    vec3 tileSize = vec3(4.0);
-    point = mod(point + 0.5 * tileSize, tileSize) - 0.5 * tileSize;
-
     vec3 z = point;
     float dr = 1.0;
-    float r = 0.0;
-    
-    int Iterations = 6;
-    float Power = 8.0 * abs(sin(i_time)) + 5.0;
+    float scale = 2.0;
 
-    for (int i = 0; i < Iterations; i++) {
-        r = length(z);
-        if (r > 2.0) break;
+    float minRadius = 0.5;
+    float fixedRadius = 1.0;
 
-        float theta = acos(z.z / r);
-        float phi = atan(z.y, z.x);
-        float zr = pow(r, Power - 1.0);
+    float minRadius2 = minRadius * minRadius;
+    float fixedRadius2 = fixedRadius * fixedRadius;
 
-        dr = zr * Power * dr + 1.0;
+    for (int i = 0; i < 12; i++) {
+        z = clamp(z, -1.0, 1.0) * 2.0 - z;
 
-        zr *= r;
-        theta *= Power;
-        phi *= Power;
+        float r2 = dot(z, z);
+        float r = length(z);
 
-        z = zr * vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
-        z += point;
+        if (r2 < minRadius2) {
+            float scaleFactor = (fixedRadius2 / minRadius2);
+            z *= scaleFactor;
+            dr *= scaleFactor;
+        } else if (r2 < fixedRadius2) {
+            float scaleFactor = (fixedRadius2 / r2);
+            z *= scaleFactor;
+            dr *= scaleFactor;
+        }
+
+        z = z * scale + point;
+        dr = dr * abs(scale) + 1.0;
     }
 
-    return 0.5 * log(r) * r / dr;
+    return length(z) / abs(dr);
 }
 
 vec3 fractal_normal(Fractal fractal, vec3 p) {
-    float eps = 0.001; // Try tweaking this if output is still zero
+    float eps = 0.01;
     return normalize(vec3(
         fractal_distance(fractal, p + vec3(eps, 0.0, 0.0)) - fractal_distance(fractal, p - vec3(eps, 0.0, 0.0)),
         fractal_distance(fractal, p + vec3(0.0, eps, 0.0)) - fractal_distance(fractal, p - vec3(0.0, eps, 0.0)),
@@ -83,7 +85,7 @@ vec3 fractal_normal(Fractal fractal, vec3 p) {
 }
 
 vec3 sun_dir = normalize(vec3(1.0, 1.0, 1.0));
-float sun_brightness = 0.5;
+float sun_brightness = 0.2;
 
 Fractal fractal = Fractal(vec3(0.0, 0.0, 0.0), 1.0);
 
@@ -102,14 +104,14 @@ void main() {
 
     float dist = 1.0;
     vec3 starting_point = cam_pos;
-    int steps = 50;
+    int steps = 100;
 
     for (int i = 0; i < steps; i++) {
         dist = fractal_distance(fractal, starting_point);
         
-        float glow_strength = 0.1;
-        float bloom_factor = exp(-dist * 15.0);
-        glow += vec3(0.8, 0.5, 0.1) * bloom_factor * glow_strength;
+        float glow_strength = 0.02;
+        float bloom_factor = exp(-dist * 20.0);
+        glow += vec3(0, 0, 0.2) * bloom_factor * glow_strength;
 
         starting_point += ray_dir * dist;
 
@@ -118,8 +120,8 @@ void main() {
             color = vec3(1.0) * float(i) / float(steps);
             color = (1.0 - color);
             //color *= normal;
-            //color *= vec3(length(color), 0.0, 1.0);
-            color *= clamp(dot(normal, -sun_dir), sun_brightness, 1.0);
+            color *= vec3(length(color), 0.0, 1.0);
+            color *= clamp(dot(normal, sun_dir), sun_brightness, 1.0);
             break;
         }
     }

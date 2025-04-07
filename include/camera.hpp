@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <iostream>
+#include <string>
 
 class Camera {
 private:
@@ -21,7 +23,7 @@ public:
 
 public:
     Camera()
-        : m_position(-2.5, 0, -3), m_angle(M_PI/4, 0), m_speed(1.f), m_mouse_sensitivity(0.2f), m_mouse_locked(false) {}
+        : m_position(2.961881, -4.429515, -0.327023), m_angle(M_PI/4, 0), m_speed(0.01f), m_mouse_sensitivity(0.2f), m_mouse_locked(false) {}
     ~Camera() = default;
 
     void lock_mouse(sf::RenderWindow& window) {
@@ -34,10 +36,10 @@ public:
     void move(const float& dt) {
         float fixed_speed = m_speed * dt;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-            fixed_speed /= 10;
+            fixed_speed *= 10;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
-            fixed_speed *= 10;
+            fixed_speed *= 100;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -67,6 +69,10 @@ public:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
             m_position.y -= fixed_speed;
         }
+
+        //std::cout << "x: " << std::to_string(this->m_position.x) << " - ";
+        //std::cout << "y: " << std::to_string(this->m_position.y) << " - ";
+        //std::cout << "z: " << std::to_string(this->m_position.z) << "\n";
     }
 
     void handle_mouse_movement(sf::RenderWindow& window) {

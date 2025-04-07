@@ -22,14 +22,14 @@ void main() {
 
     float dist = 1.0;
     vec3 starting_point = cam_pos;
-    int steps = 50;
+    int steps = 100;
 
     for (int i = 0; i < steps; i++) {
         dist = fractal_distance(fractal, starting_point);
         
-        float glow_strength = 0.1;
-        float bloom_factor = exp(-dist * 15.0);
-        glow += vec3(0.8, 0.5, 0.1) * bloom_factor * glow_strength;
+        float glow_strength = 0.02;
+        float bloom_factor = exp(-dist * 20.0);
+        glow += vec3(0, 0, 0.2) * bloom_factor * glow_strength;
 
         starting_point += ray_dir * dist;
 
@@ -39,7 +39,7 @@ void main() {
             color = (1.0 - color);
             //color *= normal;
             color *= vec3(length(color), 0.0, 1.0);
-            color *= clamp(dot(normal, -sun_dir), sun_brightness, 1.0);
+            color *= clamp(dot(normal, sun_dir), sun_brightness, 1.0);
             break;
         }
     }
