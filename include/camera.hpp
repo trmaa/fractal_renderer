@@ -75,7 +75,7 @@ public:
 
         m_position += sf::Vector3f(m_vector_speed.x, m_vector_speed.y, m_vector_speed.z) * delta_time;
 
-        m_vector_speed *= 0.99f;
+        m_vector_speed *= 0.97f;
         if (glm::length(m_vector_speed) > m_max_speed) {
             m_vector_speed = glm::normalize(m_vector_speed) * m_max_speed; 
         }
