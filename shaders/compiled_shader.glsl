@@ -50,7 +50,7 @@ float fractal_distance(Fractal fractal, vec3 point) {
     float r = 0.0;
     
     int Iterations = 6;
-    float Power = 8.0 * abs(sin(i_time)) + 2.0;
+    float Power = 8.0 * abs(sin(i_time)) + 5.0;
 
     for (int i = 0; i < Iterations; i++) {
         r = length(z);
@@ -94,7 +94,7 @@ void main() {
 
     float minimum_distance = 0.0001;
 
-    vec3 ray_idle_dir = normalize(vec3(uv.xy, 2.5));
+    vec3 ray_idle_dir = normalize(vec3(uv.xy, 1));
     vec3 ray_dir = angle2_to_vector3_matrix(cam_ang) * ray_idle_dir;
 
     vec3 color = vec3(0);
@@ -118,7 +118,7 @@ void main() {
             color = vec3(1.0) * float(i) / float(steps);
             color = (1.0 - color);
             //color *= normal;
-            color *= vec3(length(color), 0.0, 1.0);
+            //color *= vec3(length(color), 0.0, 1.0);
             color *= clamp(dot(normal, -sun_dir), sun_brightness, 1.0);
             break;
         }

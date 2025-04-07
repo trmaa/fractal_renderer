@@ -24,7 +24,7 @@ public:
 public:
 	Window(std::string title):
 		m_title(title) {
-		float factor = 2.5f;
+		float factor = 1.5f;
 
 		this->create(sf::VideoMode(400*factor, 400*factor), m_title, sf::Style::None);
 		this->setFramerateLimit(60);

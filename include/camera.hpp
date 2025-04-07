@@ -36,6 +36,9 @@ public:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
             fixed_speed /= 10;
         }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
+            fixed_speed *= 10;
+        }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             m_position.x += std::sin(m_angle.x) * fixed_speed;

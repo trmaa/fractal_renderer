@@ -14,7 +14,7 @@ void main() {
 
     float minimum_distance = 0.0001;
 
-    vec3 ray_idle_dir = normalize(vec3(uv.xy, 2.5));
+    vec3 ray_idle_dir = normalize(vec3(uv.xy, 1));
     vec3 ray_dir = angle2_to_vector3_matrix(cam_ang) * ray_idle_dir;
 
     vec3 color = vec3(0);
