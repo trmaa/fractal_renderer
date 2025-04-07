@@ -2,16 +2,19 @@
 #define CAMERA_HPP
 
 #include <SFML/Graphics.hpp>
+#include <glm/glm.hpp>
 #include <cmath>
-#include <iostream>
-#include <string>
+//#include <iostream>
+//#include <string>
 
 class Camera {
 private:
     sf::Vector3f m_position;
     sf::Vector2f m_angle;
 
-    float m_speed;
+    float m_aceleration;
+    float m_max_speed = 1.f;
+    glm::vec3 m_vector_speed;
     float m_mouse_sensitivity;
 
     sf::Vector2f m_center_position;
@@ -23,7 +26,7 @@ public:
 
 public:
     Camera()
-        : m_position(2.961881, -4.429515, -0.327023), m_angle(M_PI/4, 0), m_speed(0.01f), m_mouse_sensitivity(0.2f), m_mouse_locked(false) {}
+        : m_position(2.961881, -4.429515, -0.327023), m_angle(M_PI/4, 0), m_aceleration(0.01f), m_mouse_sensitivity(0.2f), m_mouse_locked(false) {}
     ~Camera() = default;
 
     void lock_mouse(sf::RenderWindow& window) {
@@ -33,46 +36,56 @@ public:
         m_mouse_locked = true;
     }
 
-    void move(const float& dt) {
-        float fixed_speed = m_speed * dt;
+    
+    void move(const float& delta_time) {
+        float fixed_aceleration = m_aceleration * delta_time;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-            fixed_speed *= 10;
+            fixed_aceleration *= 10;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
-            fixed_speed *= 100;
+            fixed_aceleration *= 100;
         }
+
+        glm::vec3 forward {
+            std::cos(m_angle.y) * std::sin(m_angle.x),
+            std::sin(m_angle.y),
+            std::cos(m_angle.y) * std::cos(m_angle.x)
+        };
+
+        glm::vec3 right {
+            std::sin(m_angle.x - 3.14159f / 2.0f),
+            0,
+            std::cos(m_angle.x - 3.14159f / 2.0f)
+        };
+
+        sf::Vector3f up { 0, 1, 0 };
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            m_position.x += std::sin(m_angle.x) * fixed_speed;
-            m_position.z += std::cos(m_angle.x) * fixed_speed;
+            m_vector_speed += forward * fixed_aceleration;
         }
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            m_position.x -= std::sin(m_angle.x) * fixed_speed;
-            m_position.z -= std::cos(m_angle.x) * fixed_speed;
+            m_vector_speed -= forward * fixed_aceleration;
         }
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            m_position.x -= std::sin(m_angle.x + 3.14159f / 2) * fixed_speed;
-            m_position.z -= std::cos(m_angle.x + 3.14159f / 2) * fixed_speed;
+            m_vector_speed += right * fixed_aceleration;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            m_vector_speed -= right * fixed_aceleration;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            m_position.x += std::sin(m_angle.x + 3.14159f / 2) * fixed_speed;
-            m_position.z += std::cos(m_angle.x + 3.14159f / 2) * fixed_speed;
+        m_position += sf::Vector3f(m_vector_speed.x, m_vector_speed.y, m_vector_speed.z) * delta_time;
+
+        m_vector_speed *= 0.99f;
+        if (glm::length(m_vector_speed) > m_max_speed) {
+            m_vector_speed = glm::normalize(m_vector_speed) * m_max_speed; 
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            m_position.y += fixed_speed;
+            m_position += up * fixed_aceleration;
         }
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-            m_position.y -= fixed_speed;
+            m_position -= up * fixed_aceleration;
         }
-
-        //std::cout << "x: " << std::to_string(this->m_position.x) << " - ";
-        //std::cout << "y: " << std::to_string(this->m_position.y) << " - ";
-        //std::cout << "z: " << std::to_string(this->m_position.z) << "\n";
     }
 
     void handle_mouse_movement(sf::RenderWindow& window) {

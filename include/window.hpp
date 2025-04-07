@@ -65,6 +65,14 @@ public:
 		m_fps_text.setString("fps: " + std::to_string(1 + (int)(1.f / delta_time)) + " (hz)");
 		this->draw(m_fps_text);
 
+		sf::Vertex cross[] = {
+			sf::Vertex(sf::Vector2f(this->getSize().x / 2, this->getSize().y / 2 - 8), sf::Color(255, 0, 255)),
+			sf::Vertex(sf::Vector2f(this->getSize().x / 2, this->getSize().y / 2 + 8), sf::Color(255, 0, 255)),
+			sf::Vertex(sf::Vector2f(this->getSize().x / 2 - 8, this->getSize().y / 2), sf::Color(255, 0, 255)),
+			sf::Vertex(sf::Vector2f(this->getSize().x / 2 + 8, this->getSize().y / 2), sf::Color(255, 0, 255))
+		};
+		this->draw(cross, 4, sf::Lines);
+
 		this->display();
 	}
 };
