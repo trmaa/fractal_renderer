@@ -7,26 +7,28 @@
 
 class Window: public sf::RenderWindow {
 private:
-	int m_width;
-	int m_height;
+	int m_width = 160;
+	int m_height = 90;
 	std::string m_title;
 
 	sf::Font m_font;
 	sf::Text m_fps_text;
 
 	sf::Shader m_shader;
-	sf::RectangleShape m_screen;
+	sf::RenderTexture m_render_texture;
+	sf::Sprite m_screen_sprite;         
+	sf::RectangleShape m_screen_shape;  
 
 public:
 	const int& get_width() { return m_width; }
 	const int& get_height() { return m_height; }
 
-public:
-	Window(std::string title):
-		m_title(title) {
-		float factor = 1.f;
+	Window(std::string title): m_title(title) {
+		float factor = 3.f;
+		m_width *= factor;
+		m_height *= factor;
 
-		this->create(sf::VideoMode(400*factor, 400*factor), m_title, sf::Style::None);
+		this->create(sf::VideoMode::getDesktopMode(), m_title, sf::Style::Fullscreen);
 		this->setFramerateLimit(60);
 
 		m_font.loadFromFile("bin/fonts/terminus.ttf");
@@ -37,24 +39,30 @@ public:
 
 		std::system("python3 scripts/shader_compiler.py");
 		m_shader.loadFromFile("shaders/compiled_shader.glsl", sf::Shader::Fragment);
-		m_shader.setUniform("screen_size", sf::Vector2f(this->getSize()));
+		m_shader.setUniform("screen_size", sf::Vector2f(m_width, m_height));
 
-		sf::RectangleShape s(sf::Vector2f(this->getSize().x, this->getSize().y));
-		m_screen = s;
-		m_screen.setPosition(0, 0);
-		m_screen.setScale(1,1);
+		m_render_texture.create(m_width, m_height);
+		m_screen_sprite.setTexture(m_render_texture.getTexture());
+
+		sf::Vector2f window_size = static_cast<sf::Vector2f>(this->getSize());
+		sf::Vector2f scale(window_size.x / m_width, window_size.y / m_height);
+		m_screen_sprite.setScale(scale);
 	}
 
 	void repaint(float i_time, float delta_time, Camera camera) {
-		this->clear();
+		m_render_texture.clear();
 
 		m_shader.setUniform("cam_pos", camera.get_position());
 		m_shader.setUniform("cam_ang", camera.get_angle());
 		m_shader.setUniform("i_time", i_time);
-		m_shader.setUniform("screen_size", sf::Vector2f(this->getSize()));
-		this->draw(m_screen, &m_shader);
+		m_shader.setUniform("screen_size", sf::Vector2f(m_width, m_height));
+		m_render_texture.draw(sf::RectangleShape(sf::Vector2f(m_width, m_height)), &m_shader);
+		m_render_texture.display();
 
-		m_fps_text.setString("fps: "+std::to_string(1 + (int)(1.f/delta_time)) + " (hz)");
+		this->clear();
+		this->draw(m_screen_sprite);
+
+		m_fps_text.setString("fps: " + std::to_string(1 + (int)(1.f / delta_time)) + " (hz)");
 		this->draw(m_fps_text);
 
 		this->display();
