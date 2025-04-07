@@ -58,7 +58,7 @@ public:
             std::cos(m_angle.x - 3.14159f / 2.0f)
         };
 
-        sf::Vector3f up { 0, 1, 0 };
+        glm::vec3 up = glm::cross(right, forward);
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             m_vector_speed += forward * fixed_aceleration;
@@ -72,19 +72,18 @@ public:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             m_vector_speed -= right * fixed_aceleration;
         }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+            m_vector_speed += up * fixed_aceleration;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+            m_vector_speed -= up * fixed_aceleration;
+        }
 
         m_position += sf::Vector3f(m_vector_speed.x, m_vector_speed.y, m_vector_speed.z) * delta_time;
 
         m_vector_speed *= 0.97f;
         if (glm::length(m_vector_speed) > m_max_speed) {
             m_vector_speed = glm::normalize(m_vector_speed) * m_max_speed; 
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            m_position += up * fixed_aceleration;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-            m_position -= up * fixed_aceleration;
         }
     }
 
