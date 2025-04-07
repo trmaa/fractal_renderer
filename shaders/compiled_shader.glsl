@@ -42,6 +42,9 @@ struct Fractal {
 }*/
 
 float fractal_distance(Fractal fractal, vec3 point) {
+    vec3 tileSize = vec3(20.0);
+    point = mod(point + 0.5 * tileSize, tileSize) - 0.5 * tileSize;
+
     vec3 z = point;
     float dr = 1.0;
     float scale = 2.0;
