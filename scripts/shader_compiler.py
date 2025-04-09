@@ -14,7 +14,7 @@ def preprocess_shader(input_file, output_file, include_path):
                         outfile.write(incfile.read())
                         outfile.write("\n")
                 else:
-                    raise FileNotFoundError(f"Included file {include_file} not found.")
+                    raise FileNotFoundError(f"Included file:{include_filenot} found.")
             else:
                 outfile.write(line)
 
