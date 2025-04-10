@@ -107,8 +107,7 @@ void main() {
 
     float dist = 1.0;
     vec3 starting_point = cam_pos;
-    int steps = 100;
-
+    int steps = 150;
     for (int i = 0; i < steps; i++) {
         dist = fractal_distance(fractal, starting_point);
         

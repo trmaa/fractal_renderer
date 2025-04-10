@@ -1,6 +1,7 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include "SFML/Window/Mouse.hpp"
 #include <SFML/Graphics.hpp>
 #include <glm/glm.hpp>
 #include <cmath>
@@ -26,23 +27,25 @@ public:
 
 public:
     Camera()
-        : m_position(2.961881, -4.429515, -0.327023), m_angle(M_PI/4, 0), m_aceleration(0.01f), m_mouse_sensitivity(0.2f), m_mouse_locked(false) {}
+        : m_position(2.961881, -4.429515, -0.327023), m_angle(M_PI/4, 0), 
+	m_aceleration(0.01f), m_mouse_sensitivity(0.2f), m_mouse_locked(false) {}
     ~Camera() = default;
 
     void lock_mouse(sf::RenderWindow& window) {
         m_center_position = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
         window.setMouseCursorVisible(false);
-        sf::Mouse::setPosition(window.mapCoordsToPixel({ m_center_position.x, m_center_position.y }), window);
+        sf::Mouse::setPosition(
+	    window.mapCoordsToPixel({ m_center_position.x, m_center_position.y }), window);
         m_mouse_locked = true;
     }
 
     
     void move(const float& delta_time) {
         float fixed_aceleration = m_aceleration * delta_time;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) { 
             fixed_aceleration *= 10;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
             fixed_aceleration *= 100;
         }
 
@@ -81,9 +84,9 @@ public:
 
         m_position += sf::Vector3f(m_vector_speed.x, m_vector_speed.y, m_vector_speed.z) * delta_time;
 
-        m_vector_speed *= 0.97f;
+        m_vector_speed *= 0.99f;
         if (glm::length(m_vector_speed) > m_max_speed) {
-            m_vector_speed = glm::normalize(m_vector_speed) * m_max_speed; 
+            //m_vector_speed = glm::normalize(m_vector_speed) * m_max_speed; 
         }
     }
 
