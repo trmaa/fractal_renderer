@@ -99,7 +99,7 @@ void main() {
 
     float minimum_distance = 0.0001;
 
-    vec3 ray_idle_dir = normalize(vec3(uv.xy, 2));
+    vec3 ray_idle_dir = normalize(vec3(uv.xy, 1));
     vec3 ray_dir = angle2_to_vector3_matrix(cam_ang) * ray_idle_dir;
 
     vec3 color = vec3(0);
@@ -111,9 +111,9 @@ void main() {
     for (int i = 0; i < steps; i++) {
         dist = fractal_distance(fractal, starting_point);
         
-        float glow_strength = 0.02;
+        float glow_strength = 0.01;
         float bloom_factor = exp(-dist * 20.0);
-        glow += vec3(0, 0, 0.2) * bloom_factor * glow_strength;
+        glow += vec3(0.1, 0.1, 0.1) * bloom_factor * glow_strength;
 
         starting_point += ray_dir * dist;
 

@@ -1,5 +1,4 @@
 #include <SFML/Graphics.hpp>
-#include <cstdlib>
 #include "window.hpp"
 #include "camera.hpp"
 
