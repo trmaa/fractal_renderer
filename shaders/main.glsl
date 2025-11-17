@@ -9,42 +9,42 @@ uniform float i_time;
 #include "scene.glsl"
 
 void main() {
-    vec2 uv = (gl_FragCoord.xy / screen_size) * 2.0 - 1.0;
-    uv.x = -uv.x * screen_size.x / screen_size.y;
+	vec2 uv = (gl_FragCoord.xy / screen_size) * 2.0 - 1.0;
+	uv.x = -uv.x * screen_size.x / screen_size.y;
 
-    float minimum_distance = 0.0001;
+	float minimum_distance = 0.0001;
 
-    vec3 ray_idle_dir = normalize(vec3(uv.xy, 1));
-    vec3 ray_dir = angle2_to_vector3_matrix(cam_ang) * ray_idle_dir;
+	vec3 ray_idle_dir = normalize(vec3(uv.xy, 1));
+	vec3 ray_dir = angle2_to_vector3_matrix(cam_ang) * ray_idle_dir;
 
-    vec3 color = vec3(0);
-    vec3 glow = vec3(0);
+	vec3 color = vec3(0);
+	vec3 glow = vec3(0);
 
-    float dist = 1.0;
-    vec3 starting_point = cam_pos;
-    int steps = 150;
-    for (int i = 0; i < steps; i++) {
-        dist = fractal_distance(fractal, starting_point);
-        
-        float glow_strength = 0.01;
-        float bloom_factor = exp(-dist * 20.0);
-        glow += vec3(0.1, 0.1, 0.1) * bloom_factor * glow_strength;
+	float dist = 1.0;
+	vec3 starting_point = cam_pos;
+	int steps = 150;
+	for (int i = 0; i < steps; i++) {
+		dist = fractal_distance(fractal, starting_point);
 
-        starting_point += ray_dir * dist;
+		float glow_strength = 0.01;
+		float bloom_factor = exp(-dist * 20.0);
+		glow += vec3(0.1, 0.1, 0.1) * bloom_factor * glow_strength;
 
-        if (dist <= minimum_distance) {
-            vec3 normal = fractal_normal(fractal, starting_point);
-            color = vec3(1.0) * float(i) / float(steps);
-            color = (1.0 - color);
-            //color *= normal;
-            //color *= vec3(length(color), 0.0, 1.0);
-            color *= clamp(dot(normal, sun_dir), sun_brightness, 1.0);
-            break;
-        }
-    }
+		starting_point += ray_dir * dist;
 
-    color += glow/3;
-    color = clamp(color, 0.0, 1.0);
+		if (dist <= minimum_distance) {
+			vec3 normal = fractal_normal(fractal, starting_point);
+			color = vec3(1.0) * float(i) / float(steps);
+			color = (1.0 - color);
+			//color *= normal;
+			//color *= vec3(length(color), 0.0, 1.0);
+			color *= clamp(dot(normal, sun_dir), sun_brightness, 1.0);
+			break;
+		}
+	}
 
-    gl_FragColor = vec4(color, 1.0);
+	color += glow/3;
+	color = clamp(color, 0.0, 1.0);
+
+	gl_FragColor = vec4(color, 1.0);
 }
